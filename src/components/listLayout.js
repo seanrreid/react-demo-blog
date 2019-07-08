@@ -1,11 +1,10 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-import PostData from "./postData";
-
 const PostList = styled.ul`
-  flex: 0 1 25%;
+  flex: 0 1 100%;
   list-style-type: none;
   margin: 0;
   text-align: left;
@@ -17,16 +16,9 @@ const PostList = styled.ul`
   }
 `;
 
-const PostDetails = styled.div`
-  flex: 1;
-  margin: 0;
-`;
-
 class ListLayout extends Component {
   state = {
-    showDetails: false,
-    posts: [],
-    postData: null
+    posts: []
   };
 
   componentDidMount() {
@@ -37,36 +29,27 @@ class ListLayout extends Component {
     });
   }
 
-  loadPost = post => {
-    this.setState({
-      showDetails: true,
-      postData: post
-    });
-  };
-
   render() {
-    const { posts, showDetails, postData } = this.state;
+    const { posts } = this.state;
     return (
-      <>
-        <PostList>
-          {posts.map((post, index) => {
-            return (
-              <li key={index}>
-                <a href="#" onClick={() => this.loadPost(post)}>
-                  {post.post_title}
-                </a>
-              </li>
-            );
-          })}
-        </PostList>
-        <PostDetails>
-          {!!showDetails && !!postData ? (
-            <PostData postData={postData} />
-          ) : (
-            <p>Please Select an entry</p>
-          )}
-        </PostDetails>
-      </>
+      <PostList>
+        {posts.map((post, index) => {
+          return (
+            <li key={index}>
+              <Link
+                to={{
+                  pathname: `/post/${post.id}`,
+                  state: {
+                    postData: post
+                  }
+                }}
+              >
+                {post.post_title}
+              </Link>
+            </li>
+          );
+        })}
+      </PostList>
     );
   }
 }
